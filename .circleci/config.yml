@@ -43,6 +43,9 @@ jobs:
       - run:
           name: Install test dependencies
           command: pip install -r tests/requirements/py3.txt
+      - run:
+          name: Count cache files
+          command: find ~/.cache/pip -type f | wc -l
       - save_cache:
           key: django-deps-v1-{{ checksum "tests/requirements/py3.txt" }}
           paths:
