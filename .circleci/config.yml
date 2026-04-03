@@ -1,0 +1,51 @@
+version: 2.1
+
+workflows:
+  cache-benchmark:
+    jobs:
+      - benchmark-no-cache
+      - benchmark-warm-cache
+      - benchmark-cold-miss
+
+jobs:
+  benchmark-no-cache:
+    docker:
+      - image: cimg/python:3.12
+    resource_class: medium
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies (no cache, no pip cache)
+          command: pip install --no-cache-dir -r requirements/test.txt
+
+  benchmark-warm-cache:
+    docker:
+      - image: cimg/python:3.12
+    resource_class: medium
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - django-deps-v1-{{ checksum "requirements/test.txt" }}
+      - run:
+          name: Install dependencies
+          command: pip install -r requirements/test.txt
+      - save_cache:
+          key: django-deps-v1-{{ checksum "requirements/test.txt" }}
+          paths:
+            - ~/.cache/pip
+            - ~/.local/lib/python3.12/site-packages
+
+  benchmark-cold-miss:
+    docker:
+      - image: cimg/python:3.12
+    resource_class: medium
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            # Intentionally wrong key — will always miss, measures failed restore overhead
+            - django-deps-v1-cache-miss-{{ epoch }}
+      - run:
+          name: Install dependencies (after cache miss)
+          command: pip install --no-cache-dir -r requirements/test.txt
