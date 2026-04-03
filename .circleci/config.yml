@@ -15,8 +15,11 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install dependencies (no cache, no pip cache)
-          command: pip install --no-cache-dir -r requirements/test.txt
+          name: Install Django
+          command: pip install --no-cache-dir -e .
+      - run:
+          name: Install test dependencies (no cache, no pip cache)
+          command: pip install --no-cache-dir -r tests/requirements/py3.txt
 
   benchmark-warm-cache:
     docker:
@@ -26,12 +29,15 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - django-deps-v1-{{ checksum "requirements/test.txt" }}
+            - django-deps-v1-{{ checksum "tests/requirements/py3.txt" }}
       - run:
-          name: Install dependencies
-          command: pip install -r requirements/test.txt
+          name: Install Django
+          command: pip install -e .
+      - run:
+          name: Install test dependencies
+          command: pip install -r tests/requirements/py3.txt
       - save_cache:
-          key: django-deps-v1-{{ checksum "requirements/test.txt" }}
+          key: django-deps-v1-{{ checksum "tests/requirements/py3.txt" }}
           paths:
             - ~/.cache/pip
             - ~/.local/lib/python3.12/site-packages
@@ -47,5 +53,8 @@ jobs:
             # Intentionally wrong key — will always miss, measures failed restore overhead
             - django-deps-v1-cache-miss-{{ epoch }}
       - run:
-          name: Install dependencies (after cache miss)
-          command: pip install --no-cache-dir -r requirements/test.txt
+          name: Install Django
+          command: pip install --no-cache-dir -e .
+      - run:
+          name: Install test dependencies (after cache miss)
+          command: pip install --no-cache-dir -r tests/requirements/py3.txt
