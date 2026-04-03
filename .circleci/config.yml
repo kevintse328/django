@@ -6,6 +6,7 @@ workflows:
       - benchmark-no-cache
       - benchmark-warm-cache
       - benchmark-cold-miss
+      - benchmark-perfect-cache
 
 jobs:
   benchmark-no-cache:
@@ -67,3 +68,25 @@ jobs:
       - run:
           name: Install test dependencies (after cache miss)
           command: pip install --no-cache-dir -r tests/requirements/py3.txt
+
+  benchmark-perfect-cache:
+    docker:
+      - image: cimg/python:3.12
+    resource_class: medium
+    steps:
+      - checkout
+      - run:
+          name: Install system dependencies
+          command: sudo apt-get update && sudo apt-get install -y libmemcached-dev
+      - run:
+          name: Install Django
+          command: pip install -e .
+      - run:
+          name: Warm pip cache (run 1 — not measured)
+          command: pip install -r tests/requirements/py3.txt
+      - run:
+          name: Clear site-packages but keep pip cache
+          command: pip uninstall -y -r tests/requirements/py3.txt
+      - run:
+          name: Install from perfect local cache (run 2 — this is the measurement)
+          command: pip install -r tests/requirements/py3.txt
