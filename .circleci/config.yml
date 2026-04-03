@@ -15,6 +15,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Install system dependencies
+          command: sudo apt-get update && sudo apt-get install -y libmemcached-dev
+      - run:
           name: Install Django
           command: pip install --no-cache-dir -e .
       - run:
@@ -27,6 +30,9 @@ jobs:
     resource_class: medium
     steps:
       - checkout
+      - run:
+          name: Install system dependencies
+          command: sudo apt-get update && sudo apt-get install -y libmemcached-dev
       - restore_cache:
           keys:
             - django-deps-v1-{{ checksum "tests/requirements/py3.txt" }}
@@ -48,6 +54,9 @@ jobs:
     resource_class: medium
     steps:
       - checkout
+      - run:
+          name: Install system dependencies
+          command: sudo apt-get update && sudo apt-get install -y libmemcached-dev
       - restore_cache:
           keys:
             # Intentionally wrong key — will always miss, measures failed restore overhead
