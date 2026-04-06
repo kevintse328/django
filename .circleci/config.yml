@@ -46,6 +46,9 @@ jobs:
       - run:
           name: Count cache files
           command: find ~/.cache/pip -type f | wc -l
+      - run:
+          name: Measure cache size
+          command: du -sh ~/.cache/pip
       - save_cache:
           key: django-deps-v1-{{ checksum "tests/requirements/py3.txt" }}
           paths:
