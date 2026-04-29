@@ -12,7 +12,7 @@ jobs:
   benchmark-no-cache:
     docker:
       - image: cimg/python:3.12
-    resource_class: medium
+    resource_class: medium.gen2
     steps:
       - checkout
       - run:
@@ -28,7 +28,7 @@ jobs:
   benchmark-warm-cache:
     docker:
       - image: cimg/python:3.12
-    resource_class: medium
+    resource_class: medium.gen2
     steps:
       - checkout
       - run:
@@ -58,7 +58,7 @@ jobs:
   benchmark-cold-miss:
     docker:
       - image: cimg/python:3.12
-    resource_class: medium
+    resource_class: medium.gen2
     steps:
       - checkout
       - run:
@@ -78,7 +78,7 @@ jobs:
   benchmark-perfect-cache:
     docker:
       - image: cimg/python:3.12
-    resource_class: medium
+    resource_class: medium.gen2
     steps:
       - checkout
       - run:
