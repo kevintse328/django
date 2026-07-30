@@ -1,5 +1,4 @@
 version: 2.1
-
 workflows:
   cache-benchmark:
     jobs:
@@ -7,12 +6,11 @@ workflows:
       - benchmark-warm-cache
       - benchmark-cold-miss
       - benchmark-perfect-cache
-
 jobs:
   benchmark-no-cache:
     docker:
       - image: cimg/python:3.12
-    resource_class: medium
+    resource_class: medium.gen3
     steps:
       - checkout
       - run:
@@ -24,11 +22,10 @@ jobs:
       - run:
           name: Install test dependencies (no cache, no pip cache)
           command: pip install --no-cache-dir -r tests/requirements/py3.txt
-
   benchmark-warm-cache:
     docker:
       - image: cimg/python:3.12
-    resource_class: medium
+    resource_class: medium.gen3
     steps:
       - checkout
       - run:
@@ -54,11 +51,10 @@ jobs:
           paths:
             - ~/.cache/pip
             - ~/.local/lib/python3.12/site-packages
-
   benchmark-cold-miss:
     docker:
       - image: cimg/python:3.12
-    resource_class: medium
+    resource_class: medium.gen3
     steps:
       - checkout
       - run:
@@ -74,11 +70,10 @@ jobs:
       - run:
           name: Install test dependencies (after cache miss)
           command: pip install --no-cache-dir -r tests/requirements/py3.txt
-
   benchmark-perfect-cache:
     docker:
       - image: cimg/python:3.12
-    resource_class: medium
+    resource_class: medium.gen3
     steps:
       - checkout
       - run:
